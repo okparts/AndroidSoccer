@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_menu_bg"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/mainMenuTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:shadowColor="@color/black_shadow"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="3"
+        android:text="@string/main_menu_title"
+        android:layout_marginTop="10dp" />
+    
+    <!-- New Game Button -->
+    <LinearLayout
+        android:id="@+id/newGameBtn"
+        android:layout_width="210dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="65dp"
+        android:paddingLeft="55dp"
+        android:paddingBottom="5dp"
+        android:background="@drawable/btn_default" >
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+	        android:textColor="@color/white"
+	        android:textSize="24sp"
+	        android:shadowColor="@color/black_shadow"
+	        android:shadowDx="2"
+	        android:shadowDy="2"
+	        android:shadowRadius="3"
+	        android:text="@string/new_game_button_label"
+	        android:gravity="center"
+	        android:clickable="true"
+	        android:focusable="true"
+			android:onClick="newGame" />
+        
+    </LinearLayout>
+    
+    <!-- Continue Game Button -->
+    <LinearLayout
+        android:id="@+id/contGameBtn"
+        android:layout_width="210dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="55dp"
+        android:paddingBottom="5dp"
+        android:background="@drawable/btn_default" >
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+	        android:textColor="@color/white"
+	        android:textSize="24sp"
+	        android:shadowColor="@color/black_shadow"
+	        android:shadowDx="2"
+	        android:shadowDy="2"
+	        android:shadowRadius="3"
+	        android:text="@string/cont_game_button_label"
+	        android:gravity="center"
+	        android:clickable="true"
+	        android:focusable="true"
+			android:onClick="contGame" />
+        
+    </LinearLayout>
+
+</LinearLayout>

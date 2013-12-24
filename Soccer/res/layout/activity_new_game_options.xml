@@ -1,0 +1,120 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_menu_bg"
+    android:orientation="vertical"
+    android:clickable="true"
+    tools:context=".NewGameOptions" >
+
+    <!-- Main Title -->
+    <TextView
+        android:id="@+id/optionsMenuTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:shadowColor="@color/black_shadow"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="3"
+        android:text="@string/main_menu_title"
+        android:layout_marginTop="10dp" />
+    
+    <!-- Country Options -->
+    <TextView
+        android:id="@+id/optionsMenuCountry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:shadowColor="@color/black_shadow"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="3"
+        android:text="@string/options_menu_country" />
+        
+    <LinearLayout
+        android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="5dp"
+	    android:orientation="horizontal" >
+        
+        <EditText
+            android:id="@+id/countryName"
+            android:hint="@string/country_name_label"
+			android:layout_width="0dp"
+			android:layout_weight="1"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="20dp"
+        	android:layout_marginRight="10dp" />
+        
+        <EditText
+            android:id="@+id/countryNickname"
+            android:hint="@string/country_nickname_label"
+            android:layout_width="0dp"
+			android:layout_weight="1"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="10dp"
+        	android:layout_marginRight="20dp" />
+        
+    </LinearLayout>
+    
+    <!-- National FA Options -->
+    <TextView
+        android:id="@+id/optionsMenuAssoc"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:shadowColor="@color/black_shadow"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="3"
+        android:text="@string/options_menu_assoc" />
+        
+    <EditText
+        android:id="@+id/assocName"
+        android:hint="@string/assoc_name_label"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="5dp"
+		android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+    
+    <!-- Create Button -->
+    <LinearLayout
+        android:id="@+id/createGameBtn"
+        android:layout_width="210dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="55dp"
+        android:paddingBottom="5dp"
+        android:background="@drawable/btn_default" >
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+	        android:textColor="@color/white"
+	        android:textSize="30sp"
+	        android:shadowColor="@color/black_shadow"
+	        android:shadowDx="2"
+	        android:shadowDy="2"
+	        android:shadowRadius="3"
+	        android:text="@string/create_button_label"
+	        android:gravity="center"
+	        android:clickable="true"
+	        android:focusable="true"
+			android:onClick="createGame" />
+        
+    </LinearLayout>
+
+</LinearLayout>

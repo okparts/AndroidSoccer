@@ -17,10 +17,10 @@
 local.properties
 
 # Eclipse project files
-/.metadata
 .classpath
 project.properties
 .project
+.metadata*
 .settings
 hs_err*
 

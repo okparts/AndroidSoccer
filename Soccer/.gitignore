@@ -19,7 +19,6 @@ local.properties
 # Eclipse project files
 .classpath
 project.properties
-.project
 .settings
 hs_err*
 

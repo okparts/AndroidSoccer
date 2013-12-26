@@ -1,7 +1,6 @@
 package com.soccer.main;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,13 +17,14 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.soccer.constants.GameVars;
-import com.soccer.database.DBOperations;
+import com.soccer.database.DBHelper;
 
 public class MainActivity extends Activity {
 
 	private Vibrator vibe;
 	private View newBtn, contBtn;
 	private boolean gameExists = true;
+	private FirstNamesThread fnThread;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,44 +46,9 @@ public class MainActivity extends Activity {
 			contBtn.setVisibility(View.INVISIBLE);
 	    }
 		
-		// try db shit
-		InputStream input = null;
-		BufferedReader reader = null;
-		DBOperations db = new DBOperations(this);
-		File dbCheck = new File("/data/data/com.soccer.main/databases/LastNames.db");
-		Log.d("DB CHECK!!", Boolean.toString(dbCheck.exists()));
-		
-		// work out a check to see if the db/table exists
-		if (!dbCheck.exists()) {
-			try {
-				input = getResources().openRawResource(R.raw.lastnames);
-				reader = new BufferedReader(new InputStreamReader(input));
-				Log.d("Success!!", "Works Fine!");
-				String ln;
-				while ((ln = reader.readLine()) != null) {
-					String[] name = ln.split(",");
-					for (int i = 0; i < name.length; i++) {
-						// write name[i] to the LastNames table
-						db.addLastName(name[i]);
-					}
-				}
-			} catch (Exception e) {
-				Log.d("FAILURE!!!", "bad file!");
-				e.printStackTrace();
-			}
-			
-			if (input != null) {
-				try {
-					input.close();
-					reader.close();
-					db.close();
-					Log.d("Success!!", "Closed Fine!");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		// build first names database table
+		fnThread = new FirstNamesThread(this);
+		fnThread.start();
 	}
 
 	@Override
@@ -122,6 +87,80 @@ public class MainActivity extends Activity {
 		
 		// pause activity
 		super.onPause();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		fnThread.close();
+	}
+
+	private static class FirstNamesThread extends Thread {
+		private boolean firstNamesIsRunning = false;
+		private Context c;
+		
+		public FirstNamesThread(Context context) {
+			this.c = context;
+		}
+		
+		@Override
+		public void run() {
+			firstNamesIsRunning = true;
+			while (firstNamesIsRunning) {
+				// try first names db
+				// variables
+				InputStream input = null;
+				BufferedReader reader = null;
+				DBHelper db = new DBHelper(c);
+				
+				// check/populate first names table
+				if (db.firstNameIsEmpty()) {
+					Log.d("DB CHECK!!", "First Name table is not populated!");
+					try {
+						input = c.getResources().openRawResource(R.raw.firstnames);
+						reader = new BufferedReader(new InputStreamReader(input));
+						Log.d("File Success!!!", "firstnames.csv open");
+						String fn;
+						while ((fn = reader.readLine()) != null) {
+							String[] names = fn.split(",");
+							for (int i = 0; i < names.length; i++) {
+								// write first names to the database
+								db.createFirstName(names[i]);
+							}
+						}
+					} catch(Exception e) {
+						Log.d("Failure!!", "Could not read firstnames.csv file.");
+					} finally {
+						if (input != null) {
+							try {
+								input.close();
+								Log.d("Success!!", "Input stream connection closed.");
+							} catch (IOException e) {
+								Log.d("Failure!!", "Problem closing input stream connection.");
+							}
+						}
+						if (reader != null) {
+							try {
+								reader.close();
+								Log.d("Success!!", "Buffered reader closed.");
+							} catch (IOException e) {
+								Log.d("Failure!!", "Problem closing buffered reader.");
+							}
+						}
+						db.closeDB();
+						Log.d("Success!!", "Database closed.");
+					}
+				} else {
+					db.closeDB();
+					Log.d("Success!!", "Database closed.");
+					Log.d("DB CHECK!!", "First Name table is already populated!");
+				}
+			}
+		}
+		
+		public void close() {
+			firstNamesIsRunning = false;
+		}
 	}
 	
 }

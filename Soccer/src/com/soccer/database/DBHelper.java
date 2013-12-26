@@ -14,7 +14,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	// general DB info
 	private static final String DB_NAME = "soccer"; // database name
 	private static final int DB_VER = 1; // database version
-	private static final String LOG_TAG = "DATABASE!!!"; // LogCat Tag name
+	private static final String LOG_TAG = "DB QUERY!!!"; // LogCat Tag name
 	
 	// table names
 	private static final String TABLE_FIRST_NAMES = "first_names";
@@ -22,7 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	// common table columns
 	private static final String COLUMN_ID = "_id";
-	private static final String COLUMN_CREATED_ON = "created_on";
+	// private static final String COLUMN_CREATED_ON = "created_on";
 	
 	// FIRST_NAMES table - columns
 	private static final String COLUMN_FIRST_NAME = "fname";
@@ -64,6 +64,23 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 	
 	/*
+	 * check if the first name table is populated
+	 */
+	public boolean firstNameIsEmpty() {
+		boolean check = false;
+		String checkDB = "SELECT COUNT(*) FROM " + TABLE_FIRST_NAMES;
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery(checkDB, null);
+		if (c != null) {
+			c.moveToFirst();
+			if (c.getInt(0) == 0) {
+				check = true;
+			}
+		}
+		return check;
+	}
+	
+	/*
 	 * add a first name
 	 */
 	public long createFirstName(String fn) {
@@ -80,7 +97,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	public String getRandomFirstName() {
 		SQLiteDatabase db = this.getReadableDatabase();
 		String selectRandom = "SELECT * FROM " + TABLE_FIRST_NAMES + " ORDER BY RANDOM() LIMIT 1";
-		Log.e(LOG_TAG, selectRandom);
+		Log.d(LOG_TAG, selectRandom);
 		
 		Cursor c = db.rawQuery(selectRandom, null);
 		
@@ -90,6 +107,23 @@ public class DBHelper extends SQLiteOpenHelper {
 		
 		String fn = c.getString(c.getColumnIndex(COLUMN_FIRST_NAME));
 		return fn;
+	}
+	
+	/*
+	 * check if the last name table is populated
+	 */
+	public boolean lastNameIsEmpty() {
+		boolean check = false;
+		String checkDB = "SELECT COUNT(*) FROM " + TABLE_LAST_NAMES;
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery(checkDB, null);
+		if (c != null) {
+			c.moveToFirst();
+			if (c.getInt(0) == 0) {
+				check = true;
+			}
+		}
+		return check;
 	}
 	
 	/*

@@ -24,7 +24,8 @@ public class MainActivity extends Activity {
 	private Vibrator vibe;
 	private View newBtn, contBtn;
 	private boolean gameExists = true;
-	private FirstNamesThread fnThread;
+	private FirstNamesThread fnThread = null;
+	private LastNamesThread lnThread = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,10 @@ public class MainActivity extends Activity {
 		// build first names database table
 		fnThread = new FirstNamesThread(this);
 		fnThread.start();
+		
+		// build first names database table
+		lnThread = new LastNamesThread(this);
+		lnThread.start();
 	}
 
 	@Override
@@ -93,8 +98,10 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		fnThread.close();
+		lnThread.close();
 	}
 
+	// new thread to add first names to the first name table
 	private static class FirstNamesThread extends Thread {
 		private boolean firstNamesIsRunning = false;
 		private Context c;
@@ -163,4 +170,72 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	// new thread to add last names to the last name table
+	private static class LastNamesThread extends Thread {
+		private boolean lastNamesIsRunning = false;
+		private Context c;
+		
+		public LastNamesThread(Context context) {
+			this.c = context;
+		}
+		
+		@Override
+		public void run() {
+			lastNamesIsRunning = true;
+			while (lastNamesIsRunning) {
+				// try first names db
+				// variables
+				InputStream input = null;
+				BufferedReader reader = null;
+				DBHelper db = new DBHelper(c);
+				
+				// check/populate first names table
+				if (db.firstNameIsEmpty()) {
+					Log.d("DB CHECK!!", "First Name table is not populated!");
+					try {
+						input = c.getResources().openRawResource(R.raw.lastnames);
+						reader = new BufferedReader(new InputStreamReader(input));
+						Log.d("File Success!!!", "lastnames.csv open");
+						String ln;
+						while ((ln = reader.readLine()) != null) {
+							String[] names = ln.split(",");
+							for (int i = 0; i < names.length; i++) {
+								// write first names to the database
+								db.createLastName(names[i]);
+							}
+						}
+					} catch(Exception e) {
+						Log.d("Failure!!", "Could not read lastnames.csv file.");
+					} finally {
+						if (input != null) {
+							try {
+								input.close();
+								Log.d("Success!!", "Input stream connection closed.");
+							} catch (IOException e) {
+								Log.d("Failure!!", "Problem closing input stream connection.");
+							}
+						}
+						if (reader != null) {
+							try {
+								reader.close();
+								Log.d("Success!!", "Buffered reader closed.");
+							} catch (IOException e) {
+								Log.d("Failure!!", "Problem closing buffered reader.");
+							}
+						}
+						db.closeDB();
+						Log.d("Success!!", "Database closed.");
+					}
+				} else {
+					db.closeDB();
+					Log.d("Success!!", "Database closed.");
+					Log.d("DB CHECK!!", "Last Name table is already populated!");
+				}
+			}
+		}
+		
+		public void close() {
+			lastNamesIsRunning = false;
+		}
+	}
 }

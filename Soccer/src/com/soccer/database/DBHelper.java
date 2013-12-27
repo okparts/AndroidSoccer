@@ -68,7 +68,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * check if the table is populated
 	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
 	 */
-	public boolean tableIsEmpty(String table) {
+	public synchronized boolean tableIsEmpty(String table) {
 		boolean check = false;
 		String checkDB = "SELECT COUNT(*) FROM " + table;
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -86,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * add a table name
 	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
 	 */
-	public long addName(String table, String column, String fn) {
+	public synchronized long addName(String table, String column, String fn) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(column, fn);
@@ -98,7 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * get a random name
 	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
 	 */
-	public String getRandomName(String table, String column) {
+	public synchronized String getRandomName(String table, String column) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		String selectRandom = "SELECT * FROM " + table + " ORDER BY RANDOM() LIMIT 1";
 		Log.d(GameVars.LOG_TAG, selectRandom);
@@ -116,7 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	/*
 	 * close database
 	 */
-	public void closeDB() {
+	public synchronized void closeDB() {
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null && db.isOpen()) {
 			db.close();

@@ -24,8 +24,7 @@ public class MainActivity extends Activity {
 	private Vibrator vibe;
 	private View newBtn, contBtn;
 	private boolean gameExists = true;
-	private FirstNamesThread fnThread = null;
-	private LastNamesThread lnThread = null;
+	private DBThread fnameThread, lnameThread, cityThread, teamThread, nicknameThread = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +46,25 @@ public class MainActivity extends Activity {
 			contBtn.setVisibility(View.INVISIBLE);
 	    }
 		
-		// build first names database table
-		fnThread = new FirstNamesThread(this);
-		fnThread.start();
+		// NEW THREAD - build first names database table
+		fnameThread = new DBThread(this, GameVars.RES_FIRSTNAMES, GameVars.TABLE_FIRST_NAMES, GameVars.COLUMN_FIRST_NAME);
+		fnameThread.start();
 		
-		// build first names database table
-		lnThread = new LastNamesThread(this);
-		lnThread.start();
+		// NEW THREAD - build first names database table
+		lnameThread = new DBThread(this, GameVars.RES_LASTNAMES, GameVars.TABLE_LAST_NAMES, GameVars.COLUMN_LAST_NAME);
+		lnameThread.start();
+		
+		// NEW THREAD - build city names database table
+		cityThread = new DBThread(this, GameVars.RES_CITYNAMES, GameVars.TABLE_CITY_NAMES, GameVars.COLUMN_CITY_NAME);
+		cityThread.start();
+		
+		// NEW THREAD - build city names database table
+		teamThread = new DBThread(this, GameVars.RES_TEAMNAMES, GameVars.TABLE_TEAM_NAMES, GameVars.COLUMN_TEAM_NAME);
+		teamThread.start();
+		
+		// NEW THREAD - build city names database table
+		nicknameThread = new DBThread(this, GameVars.RES_NICKNAMES, GameVars.TABLE_NICKNAMES, GameVars.COLUMN_NICKNAME);
+		nicknameThread.start();
 	}
 
 	@Override
@@ -93,27 +104,25 @@ public class MainActivity extends Activity {
 		// pause activity
 		super.onPause();
 	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		fnThread.close();
-		lnThread.close();
-	}
 
 	// new thread to add first names to the first name table
-	private static class FirstNamesThread extends Thread {
-		private boolean firstNamesIsRunning = false;
+	private static class DBThread extends Thread {
+		private boolean isRunning = false;
+		private String table, column;
+		private int resource;
 		private Context c;
 		
-		public FirstNamesThread(Context context) {
+		public DBThread(Context context, int resource, String table, String column) {
 			this.c = context;
+			this.resource = resource;
+			this.table = table;
+			this.column = column;
 		}
 		
 		@Override
 		public void run() {
-			firstNamesIsRunning = true;
-			while (firstNamesIsRunning) {
+			isRunning = true;
+			while (isRunning) {
 				// try first names db
 				// variables
 				InputStream input = null;
@@ -121,22 +130,22 @@ public class MainActivity extends Activity {
 				DBHelper db = new DBHelper(c);
 				
 				// check/populate first names table
-				if (db.firstNameIsEmpty()) {
+				if (db.tableIsEmpty(table)) {
 					Log.d("DB CHECK!!", "First Name table is not populated!");
 					try {
-						input = c.getResources().openRawResource(R.raw.firstnames);
+						input = c.getResources().openRawResource(resource);
 						reader = new BufferedReader(new InputStreamReader(input));
-						Log.d("File Success!!!", "firstnames.csv open");
+						Log.d("File Success!!!", "Reading file for " + table);
 						String fn;
 						while ((fn = reader.readLine()) != null) {
 							String[] names = fn.split(",");
 							for (int i = 0; i < names.length; i++) {
 								// write first names to the database
-								db.createFirstName(names[i]);
+								db.addName(table, column, names[i]);
 							}
 						}
 					} catch(Exception e) {
-						Log.d("Failure!!", "Could not read firstnames.csv file.");
+						Log.d("Failure!!", "Could not read file for " + table);
 					} finally {
 						if (input != null) {
 							try {
@@ -162,80 +171,14 @@ public class MainActivity extends Activity {
 					Log.d("Success!!", "Database closed.");
 					Log.d("DB CHECK!!", "First Name table is already populated!");
 				}
-			}
-		}
-		
-		public void close() {
-			firstNamesIsRunning = false;
-		}
-	}
-	
-	// new thread to add last names to the last name table
-	private static class LastNamesThread extends Thread {
-		private boolean lastNamesIsRunning = false;
-		private Context c;
-		
-		public LastNamesThread(Context context) {
-			this.c = context;
-		}
-		
-		@Override
-		public void run() {
-			lastNamesIsRunning = true;
-			while (lastNamesIsRunning) {
-				// try first names db
-				// variables
-				InputStream input = null;
-				BufferedReader reader = null;
-				DBHelper db = new DBHelper(c);
 				
-				// check/populate first names table
-				if (db.firstNameIsEmpty()) {
-					Log.d("DB CHECK!!", "First Name table is not populated!");
-					try {
-						input = c.getResources().openRawResource(R.raw.lastnames);
-						reader = new BufferedReader(new InputStreamReader(input));
-						Log.d("File Success!!!", "lastnames.csv open");
-						String ln;
-						while ((ln = reader.readLine()) != null) {
-							String[] names = ln.split(",");
-							for (int i = 0; i < names.length; i++) {
-								// write first names to the database
-								db.createLastName(names[i]);
-							}
-						}
-					} catch(Exception e) {
-						Log.d("Failure!!", "Could not read lastnames.csv file.");
-					} finally {
-						if (input != null) {
-							try {
-								input.close();
-								Log.d("Success!!", "Input stream connection closed.");
-							} catch (IOException e) {
-								Log.d("Failure!!", "Problem closing input stream connection.");
-							}
-						}
-						if (reader != null) {
-							try {
-								reader.close();
-								Log.d("Success!!", "Buffered reader closed.");
-							} catch (IOException e) {
-								Log.d("Failure!!", "Problem closing buffered reader.");
-							}
-						}
-						db.closeDB();
-						Log.d("Success!!", "Database closed.");
-					}
-				} else {
-					db.closeDB();
-					Log.d("Success!!", "Database closed.");
-					Log.d("DB CHECK!!", "Last Name table is already populated!");
-				}
+				// end the first names thread
+				this.close();
 			}
 		}
 		
 		public void close() {
-			lastNamesIsRunning = false;
+			isRunning = false;
 		}
 	}
 }

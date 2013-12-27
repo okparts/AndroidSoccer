@@ -7,42 +7,37 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.soccer.constants.GameVars;
+
 public class DBHelper extends SQLiteOpenHelper {
 
 	// class attributes:
 	
-	// general DB info
-	private static final String DB_NAME = "soccer"; // database name
-	private static final int DB_VER = 1; // database version
-	private static final String LOG_TAG = "DB QUERY!!!"; // LogCat Tag name
-	
-	// table names
-	private static final String TABLE_FIRST_NAMES = "first_names";
-	private static final String TABLE_LAST_NAMES = "last_names";
-	
-	// common table column names
-	private static final String COLUMN_ID = "_id";
-	// private static final String COLUMN_CREATED_ON = "created_on";
-	
-	// FIRST_NAMES table - columns
-	private static final String COLUMN_FIRST_NAME = "fname";
-	
-	// LAST_NAMES table - columns
-	private static final String COLUMN_LAST_NAME = "lname";
-	
-	
 	// Table Create Statements
 	// FIRST_NAME table create statement
-	private static final String CREATE_TABLE_FIRST_NAMES = "CREATE TABLE IF NOT EXISTS " + TABLE_FIRST_NAMES + "(" + COLUMN_ID + " INTEGER PRIMARY KEY,"
-			+ COLUMN_FIRST_NAME + " TEXT" + ")";
+	private static final String CREATE_TABLE_FIRST_NAMES = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_FIRST_NAMES + "(" + GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
+			+ GameVars.COLUMN_FIRST_NAME + " TEXT" + ")";
 	
-	private static final String CREATE_TABLE_LAST_NAMES = "CREATE TABLE IF NOT EXISTS " + TABLE_LAST_NAMES + "(" + COLUMN_ID + " INTEGER PRIMARY KEY,"
-			+ COLUMN_LAST_NAME + " TEXT" + ")";
+	// LAST_NAME table create statement
+	private static final String CREATE_TABLE_LAST_NAMES = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_LAST_NAMES + "(" + GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
+			+ GameVars.COLUMN_LAST_NAME + " TEXT" + ")";
+	
+	// CITY_NAME table create statement
+	private static final String CREATE_TABLE_CITY_NAME = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_CITY_NAMES + "(" + GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
+			+ GameVars.COLUMN_CITY_NAME + " TEXT" + ")";
+	
+	// TEAM_NAME table create statement
+	private static final String CREATE_TABLE_TEAM_NAME = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_TEAM_NAMES + "(" + GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
+			+ GameVars.COLUMN_TEAM_NAME + " TEXT" + ")";
+	
+	// NICKNAME table create statement
+	private static final String CREATE_TABLE_NICKNAME = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_NICKNAMES + "(" + GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
+			+ GameVars.COLUMN_NICKNAME + " TEXT" + ")";
 	
 	
 	// constructor
 	public DBHelper(Context context) {
-		super(context, DB_NAME, null, DB_VER);
+		super(context, GameVars.DB_NAME, null, GameVars.DB_VER);
 	}
 
 	// overridden methods from SQLiteOpenHelper
@@ -51,24 +46,31 @@ public class DBHelper extends SQLiteOpenHelper {
 		// create tables
 		db.execSQL(CREATE_TABLE_FIRST_NAMES);
 		db.execSQL(CREATE_TABLE_LAST_NAMES);
+		db.execSQL(CREATE_TABLE_CITY_NAME);
+		db.execSQL(CREATE_TABLE_TEAM_NAME);
+		db.execSQL(CREATE_TABLE_NICKNAME);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// drop old tables on upgrade
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_FIRST_NAMES);
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_LAST_NAMES);
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_FIRST_NAMES);
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_LAST_NAMES);
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_CITY_NAMES);
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_TEAM_NAMES);
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_NICKNAMES);
 		
 		// create new tables on upgrade
 		onCreate(db);
 	}
 	
 	/*
-	 * check if the first name table is populated
+	 * check if the table is populated
+	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
 	 */
-	public boolean firstNameIsEmpty() {
+	public boolean tableIsEmpty(String table) {
 		boolean check = false;
-		String checkDB = "SELECT COUNT(*) FROM " + TABLE_FIRST_NAMES;
+		String checkDB = "SELECT COUNT(*) FROM " + table;
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor c = db.rawQuery(checkDB, null);
 		if (c != null) {
@@ -81,23 +83,25 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 	
 	/*
-	 * add a first name
+	 * add a table name
+	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
 	 */
-	public long createFirstName(String fn) {
+	public long addName(String table, String column, String fn) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put(COLUMN_FIRST_NAME, fn);
-		long id = db.insert(TABLE_FIRST_NAMES, null, values);
+		values.put(column, fn);
+		long id = db.insert(table, null, values);
 		return id;
 	}
 	
 	/*
-	 * get a random first name
+	 * get a random name
+	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
 	 */
-	public String getRandomFirstName() {
+	public String getRandomName(String table, String column) {
 		SQLiteDatabase db = this.getReadableDatabase();
-		String selectRandom = "SELECT * FROM " + TABLE_FIRST_NAMES + " ORDER BY RANDOM() LIMIT 1";
-		Log.d(LOG_TAG, selectRandom);
+		String selectRandom = "SELECT * FROM " + table + " ORDER BY RANDOM() LIMIT 1";
+		Log.d(GameVars.LOG_TAG, selectRandom);
 		
 		Cursor c = db.rawQuery(selectRandom, null);
 		
@@ -105,60 +109,13 @@ public class DBHelper extends SQLiteOpenHelper {
 			c.moveToFirst();
 		}
 		
-		String fn = c.getString(c.getColumnIndex(COLUMN_FIRST_NAME));
+		String fn = c.getString(c.getColumnIndex(column));
 		return fn;
-	}
-	
-	/*
-	 * check if the last name table is populated
-	 */
-	public boolean lastNameIsEmpty() {
-		boolean check = false;
-		String checkDB = "SELECT COUNT(*) FROM " + TABLE_LAST_NAMES;
-		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor c = db.rawQuery(checkDB, null);
-		if (c != null) {
-			c.moveToFirst();
-			if (c.getInt(0) == 0) {
-				check = true;
-			}
-		}
-		return check;
-	}
-	
-	/*
-	 * add a last name
-	 */
-	public long createLastName(String ln) {
-		SQLiteDatabase db = this.getWritableDatabase();
-		ContentValues values = new ContentValues();
-		values.put(COLUMN_LAST_NAME, ln);
-		long id = db.insert(TABLE_LAST_NAMES, null, values);
-		return id;
-	}
-	
-	/*
-	 * get a random last name
-	 */
-	public String getRandomLastName() {
-		SQLiteDatabase db = this.getReadableDatabase();
-		String selectRandom = "SELECT * FROM " + TABLE_LAST_NAMES + " ORDER BY RANDOM() LIMIT 1";
-		Log.e(LOG_TAG, selectRandom);
-		
-		Cursor c = db.rawQuery(selectRandom, null);
-		
-		if (c != null) {
-			c.moveToFirst();
-		}
-		
-		String ln = c.getString(c.getColumnIndex(COLUMN_LAST_NAME));
-		return ln;
 	}
 	
 	/*
 	 * close database
 	 */
-	
 	public void closeDB() {
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null && db.isOpen()) {

@@ -5,6 +5,7 @@ import java.util.Random;
 
 import android.content.Context;
 
+import com.soccer.constants.GameVars;
 import com.soccer.database.DBHelper;
 
 public class Player {
@@ -91,8 +92,8 @@ public class Player {
 		this.value = r.nextInt(High - Low) + Low;
 		
 		DBHelper db = new DBHelper(context);
-		String fname = db.getRandomFirstName();
-		String lname = db.getRandomLastName();
+		String fname = db.getRandomName(GameVars.TABLE_FIRST_NAMES, GameVars.COLUMN_FIRST_NAME);
+		String lname = db.getRandomName(GameVars.TABLE_LAST_NAMES, GameVars.COLUMN_LAST_NAME);
 		this.name = fname + " " + lname;
 	}
 
@@ -106,14 +107,6 @@ public class Player {
 	// set player name - use with an existing name
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	//set player name - use to generate a new name
-	public void setName(Context context) {
-		DBHelper db = new DBHelper(context);
-		String fname = db.getRandomFirstName();
-		String lname = db.getRandomLastName();
-		this.name = fname + " " + lname;
 	}
 
 	// get player position

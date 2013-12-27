@@ -20,7 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	private static final String TABLE_FIRST_NAMES = "first_names";
 	private static final String TABLE_LAST_NAMES = "last_names";
 	
-	// common table columns
+	// common table column names
 	private static final String COLUMN_ID = "_id";
 	// private static final String COLUMN_CREATED_ON = "created_on";
 	

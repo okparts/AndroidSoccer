@@ -2,9 +2,6 @@ package com.soccer.constants;
 
 import com.soccer.main.R;
 
-import android.content.Context;
-import android.content.res.Resources;
-
 public final class GameVars {
 	
 	// Vibration Constant Variables:

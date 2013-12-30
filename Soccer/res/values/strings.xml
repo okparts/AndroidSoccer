@@ -4,6 +4,7 @@
     <!-- Main Titles -->
     <string name="app_name">0 Soccer</string>
     <string name="main_menu_title">Okparts Soccer</string>
+    <string name="splash_loading">Loading&#8230;</string>
 
     <!-- Button Labels -->
     <string name="new_game_button_label">New Game</string>

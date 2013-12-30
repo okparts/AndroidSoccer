@@ -17,17 +17,16 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        
         <activity
             android:name="com.soccer.main.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="com.soccer.main.NewGameOptions"
             android:label="@string/title_activity_new_game_options"
@@ -36,6 +35,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.soccer.main.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.soccer.main.BuildGame"
+            android:label="@string/title_activity_build_game"
+            android:parentActivityName="com.soccer.main.NewGameOptions"
+            android:screenOrientation="landscape" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.soccer.main.NewGameOptions" />
         </activity>
     </application>
 

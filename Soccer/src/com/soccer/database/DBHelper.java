@@ -14,26 +14,32 @@ public class DBHelper extends SQLiteOpenHelper {
 	// class attributes:
 	
 	// Table Create Statements
-	// FIRST_NAME table create statement
-	private static final String CREATE_TABLE_FIRST_NAMES = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_FIRST_NAMES + "(" + GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
-			+ GameVars.COLUMN_FIRST_NAME + " TEXT" + ")";
+	// MANAGER table create statement
+	private static final String CREATE_TABLE_MANAGER = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_MANAGER + "(" 
+			+ GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
+			+ GameVars.COLUMN_MANAGER_NAME + " TEXT,"
+			+ GameVars.COLUMN_SEASONS + " INTEGER,"
+			+ GameVars.COLUMN_TEAM_ID + " TEXT,"
+			+ GameVars.COLUMN_WIN + " INTEGER,"
+			+ GameVars.COLUMN_LOSS + " INTEGER,"
+			+ GameVars.COLUMN_DRAW + " INTEGER"
+			+ ")";
 	
-	// LAST_NAME table create statement
-	private static final String CREATE_TABLE_LAST_NAMES = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_LAST_NAMES + "(" + GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
-			+ GameVars.COLUMN_LAST_NAME + " TEXT" + ")";
-	
-	// CITY_NAME table create statement
-	private static final String CREATE_TABLE_CITY_NAME = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_CITY_NAMES + "(" + GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
-			+ GameVars.COLUMN_CITY_NAME + " TEXT" + ")";
-	
-	// TEAM_NAME table create statement
-	private static final String CREATE_TABLE_TEAM_NAME = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_TEAM_NAMES + "(" + GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
-			+ GameVars.COLUMN_TEAM_NAME + " TEXT" + ")";
-	
-	// NICKNAME table create statement
-	private static final String CREATE_TABLE_NICKNAME = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_NICKNAMES + "(" + GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
-			+ GameVars.COLUMN_NICKNAME + " TEXT" + ")";
-	
+	// LEAGUE table create statement
+	private static final String CREATE_TABLE_TEAMS = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_TEAMS + "("
+			+ GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
+			+ GameVars.COLUMN_TEAM_CITY + " TEXT,"
+			+ GameVars.COLUMN_TEAM_NAME + " TEXT,"
+			+ GameVars.COLUMN_TEAM_NICKNAME + " TEXT,"
+			+ GameVars.COLUMN_TEAM_LEAGUE_ID + " INTEGER,"
+			+ GameVars.COLUMN_TEAM_RANK + " INTEGER,"
+			+ GameVars.COLUMN_WIN + " INTEGER,"
+			+ GameVars.COLUMN_LOSS + " INTEGER,"
+			+ GameVars.COLUMN_DRAW + " INTEGER,"
+			+ GameVars.COLUMN_TEAM_GOALS_FOR + " INTEGER,"
+			+ GameVars.COLUMN_TEAM_GOALS_AGAINST + " INTEGER,"
+			+ GameVars.COLUMN_TEAM_GAMES_PLAYED + " INTEGER"
+			+ ")";
 	
 	// constructor
 	public DBHelper(Context context) {
@@ -44,21 +50,15 @@ public class DBHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// create tables
-		db.execSQL(CREATE_TABLE_FIRST_NAMES);
-		db.execSQL(CREATE_TABLE_LAST_NAMES);
-		db.execSQL(CREATE_TABLE_CITY_NAME);
-		db.execSQL(CREATE_TABLE_TEAM_NAME);
-		db.execSQL(CREATE_TABLE_NICKNAME);
+		db.execSQL(CREATE_TABLE_MANAGER);
+		db.execSQL(CREATE_TABLE_TEAMS);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// drop old tables on upgrade
-		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_FIRST_NAMES);
-		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_LAST_NAMES);
-		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_CITY_NAMES);
-		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_TEAM_NAMES);
-		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_NICKNAMES);
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_MANAGER);
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_TEAMS);
 		
 		// create new tables on upgrade
 		onCreate(db);
@@ -68,7 +68,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * check if the table is populated
 	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
 	 */
-	public synchronized boolean tableIsEmpty(String table) {
+	public boolean tableIsEmpty(String table) {
 		boolean check = false;
 		String checkDB = "SELECT COUNT(*) FROM " + table;
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -86,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * add a table name
 	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
 	 */
-	public synchronized long addName(String table, String column, String fn) {
+	public long addName(String table, String column, String fn) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(column, fn);
@@ -98,7 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * get a random name
 	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
 	 */
-	public synchronized String getRandomName(String table, String column) {
+	public String getRandomName(String table, String column) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		String selectRandom = "SELECT * FROM " + table + " ORDER BY RANDOM() LIMIT 1";
 		Log.d(GameVars.LOG_TAG, selectRandom);
@@ -114,9 +114,19 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 	
 	/*
+	 * erase tables
+	 */
+	public void eraseTables() {
+		// erase existing tables when creating a new game
+		SQLiteDatabase db = this.getReadableDatabase();
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_MANAGER);
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_TEAMS);
+	}
+	
+	/*
 	 * close database
 	 */
-	public synchronized void closeDB() {
+	public void closeDB() {
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null && db.isOpen()) {
 			db.close();

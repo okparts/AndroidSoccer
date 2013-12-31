@@ -91,10 +91,10 @@ public class Player {
 		}
 		this.value = r.nextInt(High - Low) + Low;
 		
-		DBHelper db = new DBHelper(context);
-		String fname = db.getRandomName(GameVars.TABLE_FIRST_NAMES, GameVars.COLUMN_FIRST_NAME);
-		String lname = db.getRandomName(GameVars.TABLE_LAST_NAMES, GameVars.COLUMN_LAST_NAME);
-		this.name = fname + " " + lname;
+//		DBHelper db = new DBHelper(context);
+//		String fname = db.getRandomName(GameVars.TABLE_FIRST_NAMES, GameVars.COLUMN_FIRST_NAME);
+//		String lname = db.getRandomName(GameVars.TABLE_LAST_NAMES, GameVars.COLUMN_LAST_NAME);
+//		this.name = fname + " " + lname;
 	}
 
 	// Getters and Setters for class attributes

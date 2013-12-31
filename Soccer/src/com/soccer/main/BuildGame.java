@@ -1,7 +1,8 @@
 package com.soccer.main;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,6 +17,9 @@ public class BuildGame extends Activity {
 	    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		setContentView(R.layout.activity_build_game);
+		
+		Intent passedIntent = getIntent();
+		String mgrName = passedIntent.getStringExtra("managerName");
 	}
 
 	@Override
@@ -24,5 +28,4 @@ public class BuildGame extends Activity {
 		getMenuInflater().inflate(R.menu.build_game, menu);
 		return true;
 	}
-
 }

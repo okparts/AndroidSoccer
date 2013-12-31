@@ -1,7 +1,5 @@
 package com.soccer.constants;
 
-import com.soccer.main.R;
-
 public final class GameVars {
 	
 	// Vibration Constant Variables:
@@ -14,37 +12,43 @@ public final class GameVars {
 		public static final String LOG_TAG = "DB QUERY!!!"; // LogCat Tag name
 		
 		// table names
-		public static final String TABLE_FIRST_NAMES = "first_names";
-		public static final String TABLE_LAST_NAMES = "last_names";
-		public static final String TABLE_CITY_NAMES = "city_names";
-		public static final String TABLE_TEAM_NAMES = "team_names";
-		public static final String TABLE_NICKNAMES = "nicknames";
+		public static final String TABLE_MANAGER = "manager";
+		public static final String TABLE_TEAMS = "teams";
 		
 		// common table column names
 		public static final String COLUMN_ID = "_id";
+		public static final String COLUMN_TEAM_ID = "teamID";
+		public static final String COLUMN_WIN = "win";
+		public static final String COLUMN_LOSS = "loss";
+		public static final String COLUMN_DRAW = "draw";
+		public static final String COLUMN_SEASONS = "seasons";
 		// private static final String COLUMN_CREATED_ON = "created_on";
 		
-		// FIRST_NAMES table - columns
-		public static final String COLUMN_FIRST_NAME = "fname";
+		// MANAGER table - columns
+		public static final String COLUMN_MANAGER_NAME = "managerName";
 		
-		// LAST_NAMES table - columns
-		public static final String COLUMN_LAST_NAME = "lname";
+		// TEAMS table - columns
+		public static final String COLUMN_TEAM_CITY = "city";
+		public static final String COLUMN_TEAM_NAME = "name";
+		public static final String COLUMN_TEAM_NICKNAME = "nickname";
+		public static final String COLUMN_TEAM_LEAGUE_ID = "leagueID";
+		public static final String COLUMN_TEAM_RANK = "rank";
+		public static final String COLUMN_TEAM_GOALS_FOR = "goalsFor";
+		public static final String COLUMN_TEAM_GOALS_AGAINST = "goalsAgainst";
+		public static final String COLUMN_TEAM_GAMES_PLAYED = "gamesPlayed";
 		
-		// CITY_NAMES table - columns
-		public static final String COLUMN_CITY_NAME = "city";
-		
-		// TEAM_NAMES table - columns
-		public static final String COLUMN_TEAM_NAME = "team";
-		
-		// CITY_NAMES table - columns
-		public static final String COLUMN_NICKNAME = "nickname";
-		
-		// Context csv resources
-		public static final int RES_FIRSTNAMES = R.raw.firstnames;
-		public static final int RES_LASTNAMES = R.raw.lastnames;
-		public static final int RES_CITYNAMES = R.raw.citynames;
-		public static final int RES_TEAMNAMES = R.raw.teamnames;
-		public static final int RES_NICKNAMES = R.raw.nicknames;
+		// PLAYERS table - columns
+		public static final String COLUMN_PLAYER_NAME = "name";
+		public static final String COLUMN_PLAYER_POSITION = "position";
+		public static final String COLUMN_PLAYER_TEAM_ID = "teamID";
+		public static final String COLUMN_PLAYER_STRENGTH = "strength";
+		public static final String COLUMN_PLAYER_CONTROL = "control";
+		public static final String COLUMN_PLAYER_SKILL = "skill";
+		public static final String COLUMN_PLAYER_FITNESS = "fitness";
+		public static final String COLUMN_PLAYER_GOALKEEPING = "goalkeeping";
+		public static final String COLUMN_PLAYER_AGE = "age";
+		public static final String COLUMN_PLAYER_CONTRACT_PERIOD = "contractPeriod";
+		public static final String COLUMN_PLAYER_VALUE = "value";
 	
 	// private constructor
 	private GameVars() {

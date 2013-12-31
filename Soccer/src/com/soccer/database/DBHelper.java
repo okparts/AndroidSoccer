@@ -25,7 +25,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ GameVars.COLUMN_DRAW + " INTEGER"
 			+ ")";
 	
-	// LEAGUE table create statement
+	// TEAMS table create statement
 	private static final String CREATE_TABLE_TEAMS = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_TEAMS + "("
 			+ GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
 			+ GameVars.COLUMN_TEAM_CITY + " TEXT,"
@@ -41,6 +41,21 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ GameVars.COLUMN_TEAM_GAMES_PLAYED + " INTEGER"
 			+ ")";
 	
+	// PLAYERS table create statement
+	private static final String CREATE_TABLE_PLAYERS = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_PLAYERS + "("
+			+ GameVars.COLUMN_ID + " INTEGER PRIMARY KEY,"
+			+ GameVars.COLUMN_PLAYER_NAME + " TEXT,"
+			+ GameVars.COLUMN_PLAYER_POSITION + " TEXT,"
+			+ GameVars.COLUMN_TEAM_ID + " INTEGER,"
+			+ GameVars.COLUMN_PLAYER_STRENGTH + " INTEGER,"
+			+ GameVars.COLUMN_PLAYER_CONTROL + " INTEGER,"
+			+ GameVars.COLUMN_PLAYER_SKILL + " INTEGER,"
+			+ GameVars.COLUMN_PLAYER_FITNESS + " INTEGER,"
+			+ GameVars.COLUMN_PLAYER_AGE + " INTEGER,"
+			+ GameVars.COLUMN_PLAYER_CONTRACT_PERIOD + " INTEGER,"
+			+ GameVars.COLUMN_PLAYER_VALUE + " INTEGER"
+			+ ")";
+	
 	// constructor
 	public DBHelper(Context context) {
 		super(context, GameVars.DB_NAME, null, GameVars.DB_VER);
@@ -52,6 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		// create tables
 		db.execSQL(CREATE_TABLE_MANAGER);
 		db.execSQL(CREATE_TABLE_TEAMS);
+		db.execSQL(CREATE_TABLE_PLAYERS);
 	}
 
 	@Override
@@ -59,6 +75,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		// drop old tables on upgrade
 		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_MANAGER);
 		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_TEAMS);
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_PLAYERS);
 		
 		// create new tables on upgrade
 		onCreate(db);
@@ -66,7 +83,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	/*
 	 * check if the table is populated
-	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
+	 * used for ANY table
 	 */
 	public boolean tableIsEmpty(String table) {
 		boolean check = false;
@@ -80,6 +97,54 @@ public class DBHelper extends SQLiteOpenHelper {
 			}
 		}
 		return check;
+	}
+	
+	/*
+	 * add a manager to the table
+	 * used for 
+	 */
+	public long addManager(String name, Integer... values) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(GameVars.COLUMN_MANAGER_NAME, name);
+		for (int i = 0; i < values.length; i++) {
+			cv.put(GameVars.COLUMNS_INTEGER_MANAGER[i], values[i]);
+		}
+		long id = db.insert(GameVars.TABLE_MANAGER, null, cv);
+		return id;
+	}
+	
+	/*
+	 * add a table name
+	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
+	 */
+	public long addTeam(String city, String name, String nickname, Integer... values) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(GameVars.COLUMN_TEAM_CITY, city);
+		cv.put(GameVars.COLUMN_TEAM_NAME, name);
+		cv.put(GameVars.COLUMN_TEAM_NICKNAME, nickname);
+		for (int i = 0; i < values.length; i++) {
+			cv.put(GameVars.COLUMNS_INTEGER_TEAMS[i], values[i]);
+		}
+		long id = db.insert(GameVars.TABLE_TEAMS, null, cv);
+		return id;
+	}
+	
+	/*
+	 * add a table name
+	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
+	 */
+	public long addPlayer(String name, String position, Integer... values) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(GameVars.COLUMN_PLAYER_NAME, name);
+		cv.put(GameVars.COLUMN_PLAYER_POSITION, position);
+		for (int i = 0; i < values.length; i++) {
+			cv.put(GameVars.COLUMNS_INTEGER_PLAYERS[i], values[i]);
+		}
+		long id = db.insert(GameVars.TABLE_PLAYERS, null, cv);
+		return id;
 	}
 	
 	/*
@@ -121,6 +186,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getReadableDatabase();
 		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_MANAGER);
 		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_TEAMS);
+		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_PLAYERS);
 	}
 	
 	/*

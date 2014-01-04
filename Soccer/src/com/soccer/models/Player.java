@@ -1,34 +1,20 @@
 package com.soccer.models;
 
-import java.util.Map;
 import java.util.Random;
 
 import android.content.Context;
-
-import com.soccer.constants.GameVars;
-import com.soccer.database.DBHelper;
 
 public class Player {
 
 	// class attributes
 	private String name, position;
-	private Map<String, Integer> attrs;
-	public int age, contractPeriod, value;
+	public int age, contractPeriod, value, strength, control, skill, fitness;
 	
-	// constructors
-	// default - uses getters and setters to assign values to class attributes
-	public Player(Context context) {
-		this.name = "";
-		this.position = "";
-		this.attrs = null;
-		this.age = 0;
-		this.contractPeriod = 0;
-		this.value = 0;
-	}
-	
-	// used to generate players to build out teams, leagues, etc.
-	public Player(Context context, String position, int tier) {
+	// constructor
+	// used to generate players to build out teams
+	public Player(Context context, String name, String position, int tier) {
 		
+		this.name = name;
 		this.position = position;
 		
 		// number for contractPeriod (1-5 years)
@@ -90,81 +76,5 @@ public class Player {
 				break;
 		}
 		this.value = r.nextInt(High - Low) + Low;
-		
-//		DBHelper db = new DBHelper(context);
-//		String fname = db.getRandomName(GameVars.TABLE_FIRST_NAMES, GameVars.COLUMN_FIRST_NAME);
-//		String lname = db.getRandomName(GameVars.TABLE_LAST_NAMES, GameVars.COLUMN_LAST_NAME);
-//		this.name = fname + " " + lname;
-	}
-
-	// Getters and Setters for class attributes
-	
-	// get player name
-	public String getName() {
-		return name;
-	}
-
-	// set player name - use with an existing name
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	// get player position
-	public String getPosition() {
-		return position;
-	}
-
-	// set player position
-	public void setPosition(String position) {
-		this.position = position;
-	}
-
-	// get Map of player attributes
-	public Map<String, Integer> getAttrs() {
-		return attrs;
-	}
-
-	// set player attribute - use with an existing player attributes Map
-	public void setAttrs(Map<String, Integer> attrs) {
-		this.attrs = attrs;
-	}
-	
-	// set player attribute - use to build a new player attributes Map
-	public Map<String, Integer> setAttrs(Map<String, Integer> attrs, String attr, Integer value) {
-		Map<String, Integer> newAttrs = attrs;
-		if (!newAttrs.containsKey(attr)) {
-			newAttrs.put(attr, value);
-		}
-		return newAttrs;
-	}
-
-	// get player age
-	public int getAge() {
-		return age;
-	}
-
-	// set player age
-	public void setAge(int age) {
-		this.age = age;
-	}
-
-	// get player contract period
-	public int getContractPeriod() {
-		return contractPeriod;
-	}
-
-	// set player contract period
-	public void setContractPeriod(int contractPeriod) {
-		this.contractPeriod = contractPeriod;
-	}
-
-	// get player value
-	public int getValue() {
-		return value;
-	}
-
-	//set player value
-	public void setValue(int value) {
-		this.value = value;
 	}
 }

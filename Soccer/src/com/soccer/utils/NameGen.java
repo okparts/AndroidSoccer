@@ -5,11 +5,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-//1) +v means that next syllable must definitely start with a wovel.
-//2) +c means that next syllable must definitely start with a consonant.
-//3) -v means that this syllable can only added to another syllable, that ends with a wovel.
-//4) -c means that this syllable can only added to another syllable, that ends with a consonant.
-
 public class NameGen {
 	
 	// general variables
@@ -154,6 +149,7 @@ public class NameGen {
 			} else {
 				index = random.nextInt(FNAME_MID_PRE_CONSONANT_POST_CONSONANT.length);
 				syllable = FNAME_MID_PRE_CONSONANT_POST_CONSONANT[index];
+				next = CONSONANT;
 			}
 		} else if (nextType == CONSONANT) {
 			if (prevType) {
@@ -173,7 +169,6 @@ public class NameGen {
 						syllable = FNAME_MID_PRE_VOWEL_POST_VOWEL[index];
 						next = VOWEL;
 					}
-					next = VOWEL;
 				}
 			} else {
 				if (random.nextInt(2) == 0) {
@@ -191,7 +186,6 @@ public class NameGen {
 						syllable = FNAME_MID_PRE_VOWEL_POST_CONSONANT[4];
 						next = CONSONANT;
 					}
-					next = CONSONANT;
 				}
 			}
 		}

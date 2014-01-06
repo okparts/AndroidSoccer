@@ -2,28 +2,28 @@ package com.soccer.models;
 
 import java.util.Random;
 
-import android.content.Context;
-
 import com.soccer.utils.NameGen;
 
 public class Player {
 
 	// class attributes
-	private String name, position;
-	private int age, contractPeriod, value, strength, control, skill, fitness;
-	private NameGen nameGen = null;
-	Random random = new Random();
+	public String name, position;
+	public int age, contractPeriod, value, strength, control, skill, fitness;
+	public NameGen nameGen = null;
+	public Random random = new Random();
 	
 	// utility variables
-	private int high, low, attrs, avg;
-	private int lowCount = 0;
-	private int highCount = 0;
+	public int high, low, attrs, avg;
+	public int lowCount = 0;
+	public int highCount = 0;
+	public int maxValue = 0;
+	public double total = 0.0;
 	
 	// constructor
 	// used to generate players to build out teams
-	public Player(Context context, NameGen ng, String position, int tier) {
+	public Player(NameGen ng, String position, int tier) {
 		
-		this.nameGen = ng; // name generator
+this.nameGen = ng; // name generator
 		
 		this.position = position; // player position
 		
@@ -52,90 +52,82 @@ public class Player {
 		// number for league tier
 		switch (tier) {
 			case 1:
-				low = 10000;
-				high = 15001;
+				maxValue = 15000;
 				attrs = 40;
 				break;
 			case 2:
-				low = 15000;
-				high = 25001;
+				maxValue = 25000;
 				attrs = 80;
 				break;
 			case 3:
-				low = 25000;
-				high = 35001;
+				maxValue = 35000;
 				attrs = 120;
 				break;
 			case 4:
-				low = 35000;
-				high = 50001;
+				maxValue = 50000;
 				attrs = 160;
 				break;
 			case 5:
-				low = 50000;
-				high = 70001;
+				maxValue = 70000;
 				attrs = 200;
 				break;
 			case 6:
-				low = 70000;
-				high = 150001;
+				maxValue = 150000;
 				attrs = 240;
 				break;
 			case 7:
-				low = 150000;
-				high = 250001;
+				maxValue = 250000;
 				attrs = 280;
 				break;
 			case 8:
-				low = 250000;
-				high = 750001;
+				maxValue = 750000;
 				attrs = 320;
 				break;
 			case 9:
-				low = 750000;
-				high = 2000001;
+				maxValue = 2000000;
 				attrs = 360;
 				break;
 			case 10:
-				low = 2000000;
-				high = 30000001;
+				maxValue = 30000000;
 				attrs = 400;
 				break;
 		}
-		this.value = random.nextInt(high - low) + low;
 		
 		generateAttrs(attrs);
+		
+		total = (double) this.strength + this.control + this.skill + this.fitness;
+		total = total / 400;
+		total = total * maxValue;
+		this.value = (int) Math.ceil(total);
+		
 	}
 	
-	private void generateAttrs(int total) {
-		avg = total / 4;
-		low = avg - 5;
+	private void generateAttrs(int totalAttrs) {
+		avg = totalAttrs / 4;
+		low = avg / 2;
 		high = avg + 5;
 		if (high > 100) {
 			high = 101;
 		}
+		
 		this.strength = random.nextInt(high - low) + low;
-		if (this.strength < 10) {
-			lowCount++;
-		} else {
-			highCount ++;
+		if (this.strength > 100) {
+			this.strength = 90;
 		}
 		
 		this.control = random.nextInt(high - low) + low;
-		if (this.control < 10) {
-			lowCount++;
-		} else {
-			highCount ++;
+		if (this.control > 100) {
+			this.control = 90;
 		}
 		
-		if (lowCount == 2) {
-			this.skill = random.nextInt(high - avg) + high;
-		} else if (highCount == 2) {
-			this.skill = random.nextInt(avg - low) + low;
-		} else {
-			this.skill = random.nextInt(high - low) + low;
+		this.skill = random.nextInt(high - low) + low;
+		if (this.skill > 100) {
+			this.skill = 90;
 		}
 		
-		this.fitness = total - this.strength - this.control - this.skill;
+		this.fitness = random.nextInt(high - low) + low;
+		if (this.fitness > 100) {
+			this.fitness = 90;
+		}
 	}
 }

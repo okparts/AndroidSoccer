@@ -1,31 +1,40 @@
 package com.soccer.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import android.util.Log;
+
 public class NameGen {
 	
-	// general variables
-	private String name = ""; // generated name
+	// class attributes
+	private String name = ""; // generated player name
 	private String syllable = ""; // syllable
+	private String teamCity = ""; // team city
+	private String teamName = ""; // team name
+	private String teamNickname = ""; // team nickname
 	
-	char c = ' '; // letter that ends the current generated name
-	
-	private boolean endsInVowel; // boolean for letter that ends the current generated name - vowel-TRUE | consonant-FALSE
-	// private boolean startsWithVowel; // boolean for letter that starts the current syllable - vowel-TRUE | consonant-FALSE
-	
+	// utility variables - general
 	private Random random = new Random(); // random number generator
 	
+	// utility variables - player name generator
+	char c = ' '; // letter that ends the current generated name
+	private boolean endsInVowel; // boolean for letter that ends the current generated name - vowel-TRUE | consonant-FALSE
 	private int numOfSyllables = -1; // number of syllables for the name
 	private int whichPrefix = -1; // determines the prefix array to use to begin the name - 0-Any | 1-Vowel | 2-Consonant
-	// private int whichSuffix = -1;
 	private int index = -1; // the random array index to pull the syllable value
 	private int next = -1; // determines what the next syllable must be - 0-Any | 1-Vowel | 2-Consonant
 	
-	// constants
-
+	// utility variables - team city, name, nickname generator
+	private static final int MAX_ROWS = 18950;
+	private int row = 0;
+	
+	
+	// Player Name Generator - constants
 		// preceding and proceeding syllable types
 		private static final int ANY = 0;
 		private static final int VOWEL = 1;
@@ -55,8 +64,51 @@ public class NameGen {
 		private static final String[] FNAME_SUFFIX_ANY = {"ron", "ran", "ren", "man", "yan", "sir", "der", "ham", "son", "lin", "lo", "don", "dine", "per", "nan"};
 		private static final String[] FNAME_SUFFIX_VOWEL = {"kim", "lik", "co", "mie", "nie", "gan", "se", "ne", "los", "lam", "lan"};
 		private static final String[] FNAME_SUFFIX_CONSONANT = {"am", "it", "ola", "en", "ian", "ie", "y", "io", "o", "ea", "uel", "ell", "el", "iah", "ien", "tin", "ick", "ice", "ford", "ter"};
+		
 	
-	public String getName() {
+	// Team Name Generator - constants
+		
+		// team data arrays
+		// 193 team names
+		private final String[] TEAM_NAME = {"F.C.", "United", "Industrial", "Patriots", "Sailors", "Old Boys", "Young Boys", "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "167", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "Argyle", "Fire", "Eagles", "East", "Dons", "Forest", "Etihad", "Rangers", "Sounders", "Albion", "Americans", "Arabi", "Karelia", "Bohemians", "Celtic", "Chiefs", "International", "Marist", "Monarchy", "Dynasty", "Humble Lions", "Revolution", "Saints", "Santos", "Borough", "Cerro", "City", "Hamlet", "River", "Sandwiches", "Town", "Towne", "Vale", "Sparta", "Corinth", "Betis", "River Plate", "Bluebell", "Blueball", "Cherry", "Ficus", "Laburnum", "Maple", "Shamrock", "Thistle", "Rose", "Bee", "Buffalo", "Cattle", "Cheetahs", "Dingo", "Fairies", "Goats", "Meercats", "Horses", "Hummingbirds", "Lions", "Lynx", "Snakes", "Stallions", "Mustangs", "Squirrels", "Tigers", "Swift", "Zebra", "Wolves", "Apollo", "Aris", "Atlas", "Hercules", "Spartak", "Zenit", "Spartacus", "Teuta", "Vikings", "Zico", "Dynamo", "Lokomotiv", "Torpedo", "Brotherhood", "Fortune", "Freedom", "Libertados", "Libertad", "Libertas", "Glory", "Peace"};
+		// 190 team nicknames
+		private final String[] TEAM_NICKNAME = {"Addicks", "Ash Trees", "Badgers", "Baggies", "Bantams", "Bees", "Biscuitmen", "Black Cats", "Blades", "Blues", "The Toffees", "Boro", "Brewers", "Bulls", "Bury", "Canaries", "Cardinals", "Cards", "Chairboys", "Cherries", "Citizens", "Clarets", "Cobblers", "Cottagers", "Cumbrians", "Daggers", "Dale", "Diamonds", "Dolly Blues", "Donny", "Dons", "Eagles", "FC", "Filberts", "Fleet", "Fosse", "Foxes", "Gas", "Gills", "Glaziers", "Glovers", "Grecians", "Gulls", "Gunners", "Hammers", "Harriers", "Hatters", "Heed", "Hoops", "Hornets", "Imps", "Iron", "Irons", "The Reds", "The Blues", "Reds", "Yellows", "The Yellows", "Browns", "The Browns", "The Orange", "Oranges", "Greens", "The Greens", "Knitters", "Lads", "Lambs", "Latics", "Lilywhites", "Lions", "Magpies", "Mariners", "Millers", "Minstermen", "Mushrooms", "Nailers", "O's", "Owls", "Peacocks", "Cocks", "Pensioners", "Pilgrims", "Pirates", "Pompey", "Pool", "Pools", "The Pool", "Poppies", "Fancy", "Fancy Pants", "Quakers", "The R's", "The O's", "R's", "Railwaymen", "Rams", "Rebels", "Red Devils", "Red Imps", "Riversiders", "Robins", "Rovers", "Royals", "Saddlers", "Saints", "Salop", "Sandgrounders", "Science", "Seagulls", "Seals", "Seasiders", "Shakers", "Shaymen", "Shots", "Shrimps", "Shrimpers", "Silkmen", "Skunks", "Sky Blues", "Smoggies", "Spirits", "Sprites", "Sporting", "Spurs", "Stags", "Stanleys", "Stripes", "Super", "Terras", "Terriers", "Teyn", "Tics", "Tigers", "Toon", "Tractors", "Tractor Boys", "Towners", "Townees", "Tricks", "Trotters", "Trots", "U's", "The U's", "Vics", "Valiant", "Valiants", "Vikings", "Villains", "Whites", "The Whites", "Wolves", "The Wolves", "Wanderers", "Riversiders", "Red and Blues", "Red and Whites", "Red and Greens", "Red and Yellows", "Blue and Browns", "Blue and Yellows", "Blue and Oranges", "Blue and Mauves", "Glens", "Hatchetmen", "Slicers", "Strikers", "Streakers", "Candy Canes", "Candies", "Buddies", "Cabbages", "Turnips", "Hippees", "Hedgemen", "Tarts", "Loons", "Roughnecks", "Killers", "Serial Killers", "Spiders", "Warriors", "Wasps", "Geezers", "Exiles", "Ironsides", "Bastards", "The Bastards", "Jack Bastards", "Swans", "Wingers"};
+		
+		
+	public String getTeamCity(BufferedReader reader) {
+		row = random.nextInt(MAX_ROWS);
+		if (row == 0) {
+			row = 1;
+		}
+		for (int i = 0; i <= row - 1; i++) {
+			try {
+				reader.readLine();
+			} catch (IOException e) {
+				Log.d("ERROR", e.toString());
+			}
+		}
+		try {
+			this.teamCity = reader.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			Log.d("ERROR", "Cannot assign a value for Team City");
+		}
+		return this.teamCity;
+	}
+	
+	public String getTeamName() {
+		row = random.nextInt(TEAM_NAME.length);
+		this.teamName = TEAM_NAME[row];
+		return this.teamName;
+	}
+	
+	public String getTeamNickname() {
+		row = random.nextInt(TEAM_NICKNAME.length);
+		this.teamNickname = TEAM_NICKNAME[row];
+		return this.teamNickname;
+	}
+	
+	public String getPlayerName() {
 		
 		numOfSyllables = random.nextInt(3) + 2; // returns a number of syllables between 2-4
 		

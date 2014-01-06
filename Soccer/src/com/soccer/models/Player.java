@@ -28,7 +28,7 @@ public class Player {
 		
 		this.position = position; // player position
 		
-		this.name = nameGen.getName();
+		this.name = nameGen.getPlayerName();
 		
 		// number for age (18-35)
 		low = 18;

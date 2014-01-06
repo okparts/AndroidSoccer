@@ -7,23 +7,24 @@ import com.soccer.utils.NameGen;
 public class Player {
 
 	// class attributes
-	public String name, position;
-	public int age, contractPeriod, value, strength, control, skill, fitness;
-	public NameGen nameGen = null;
-	public Random random = new Random();
+	private String name, position;
+	private int age, contractPeriod, value, strength, control, skill, fitness;
 	
 	// utility variables
-	public int high, low, attrs, avg;
-	public int lowCount = 0;
-	public int highCount = 0;
-	public int maxValue = 0;
-	public double total = 0.0;
+	private NameGen nameGen = null;
+	private Random random = new Random();
+	private int high = 0;
+	private int low = 0;
+	private int attrs = 0;
+	private int avg = 0;
+	private int maxValue = 0;
+	private double total = 0.0;
 	
 	// constructor
 	// used to generate players to build out teams
 	public Player(NameGen ng, String position, int tier) {
 		
-this.nameGen = ng; // name generator
+		this.nameGen = ng; // name generator
 		
 		this.position = position; // player position
 		
@@ -130,4 +131,77 @@ this.nameGen = ng; // name generator
 			this.fitness = 90;
 		}
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public int getContractPeriod() {
+		return contractPeriod;
+	}
+
+	public void setContractPeriod(int contractPeriod) {
+		this.contractPeriod = contractPeriod;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	public int getStrength() {
+		return strength;
+	}
+
+	public void setStrength(int strength) {
+		this.strength = strength;
+	}
+
+	public int getControl() {
+		return control;
+	}
+
+	public void setControl(int control) {
+		this.control = control;
+	}
+
+	public int getSkill() {
+		return skill;
+	}
+
+	public void setSkill(int skill) {
+		this.skill = skill;
+	}
+
+	public int getFitness() {
+		return fitness;
+	}
+
+	public void setFitness(int fitness) {
+		this.fitness = fitness;
+	}
+	
 }

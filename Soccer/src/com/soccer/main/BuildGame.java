@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.soccer.tasks.GameBuilder;
+
 public class BuildGame extends Activity {
 
 	@Override
@@ -20,6 +22,9 @@ public class BuildGame extends Activity {
 		
 		Intent passedIntent = getIntent();
 		String mgrName = passedIntent.getStringExtra("managerName");
+		
+		GameBuilder build = new GameBuilder(this, mgrName);
+		build.execute("");
 	}
 
 	@Override

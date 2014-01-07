@@ -128,7 +128,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * add a table name
 	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
 	 */
-	public long addTeam(String city, String name, String nickname, Integer... values) {
+	public long newTeam(String city, String name, String nickname, Integer... values) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		cv.put(GameVars.COLUMN_TEAM_CITY, city);

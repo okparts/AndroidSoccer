@@ -8,7 +8,7 @@ import com.soccer.models.Player;
 import com.soccer.models.Team;
 import com.soccer.utils.NameGen;
 
-public class GameBuilder extends AsyncTask<Void, Void, Boolean> {
+public class GameBuilder extends AsyncTask<String, Void, Boolean> {
 
 	// builder utilities
 	private static NameGen ng = new NameGen();
@@ -17,17 +17,23 @@ public class GameBuilder extends AsyncTask<Void, Void, Boolean> {
 	private Team team = null;
 	private Context context = null;
 	
-	private static final int TOTAL_PLAYERS = 3600;
-	private static final int TOTAL_TEAMS = 20;
+	// utility variables
+	private static final int LEAGUE_TIERS = 10;
 	private static final int PLAYERS_PER_TEAM = 18;
-	private int playerCounter = 0;
+	private static final int TEAMS_PER_LEAGUE = 20;
+	private static final String[] POSITIONS = {"Goalkeeper", "Goalkeeper", "Striker", "Striker", "Striker", "Striker", "Midfield", "Midfield", "Midfield", "Midfield", "Midfield", "Midfield", "Defender", "Defender", "Defender", "Defender", "Defender", "Defender"};
+	private int leagueTier = 0;
+	private int teamID = 0;
+	private int positionIndex = 0;
 	private String teamCity = "";
 	private String teamName = "";
 	private String teamNickname = "";
 	private String playerName = "";
+	private String playerPosition = "";
 	private String mgrName = "";
-	private int teamID = 0;
-	private static final String[] POSITIONS = {"Goalkeeper", "Goalkeeper", "Striker", "Striker", "Striker", "Striker", "Striker", "Midfield", "Midfield", "Midfield", "Midfield", "Midfield", "Midfield", "Defender", "Defender", "Defender", "Defender", "Defender", "Defender"};
+	private Integer[] teamIntValues = {0, 0, 0, 0, 0, 0, 0, 0};
+	private Integer[] playerIntValues = {0, 0, 0, 0, 0, 0, 0, 0};
+	
 	 
 	public GameBuilder(Context context, String mgrName) {
 		this.context = context;
@@ -35,30 +41,74 @@ public class GameBuilder extends AsyncTask<Void, Void, Boolean> {
 	}
 	
 	@Override
-	protected Boolean doInBackground(Void... params) {
+	protected Boolean doInBackground(String... params) {
 
 		/*
-		 * TODO List
-		 * 
 		 * 1. build the teams and players
-		 * 2. implement new DBHelper methods to handle creating team, player, manager tables
 		 * 2. write the teams, players, manager data to sqlite tables
 		 */
 		
 		// #1 - Build Team and Players
 		db = new DBHelper(context);
 		
-		for (int i = 0; i < TOTAL_PLAYERS; i++) {
-			if (playerCounter == PLAYERS_PER_TEAM) {
-				playerCounter = 0;
+		// outermost loop builds the 10 leagues
+		// starting with premier (tier 10) and ending on the lowest level league (tier 1)
+		// i = league tier
+		for (int i = LEAGUE_TIERS; i > 0; i--) {
+			leagueTier = i;
+			
+			// middle inner loop builds the 20 teams in each league
+			// j = team
+			for (int j = 0; j < TEAMS_PER_LEAGUE; j++) {
+				// build new team object
 				team = new Team(context, ng);
 				teamCity = team.getCity();
 				teamName = team.getName();
 				teamNickname = team.getNickname();
-				teamID = (int) db.newManager(mgrName, teamID);
+				teamIntValues[0] = leagueTier;
+				
+				// write new team to database
+				// capture new team database ID
+				teamID = (int) db.newTeam(teamCity, teamName, teamNickname, teamIntValues);
+				
+				// final inner loop builds the 18 players for each team
+				// k = player position index
+				for (int k = 0; k < PLAYERS_PER_TEAM; k++) {
+					positionIndex = k;
+					
+					// build manager for the last team on tier 1
+					if (leagueTier == 1 && j == (TEAMS_PER_LEAGUE - 1)) {
+						// build the user's manager
+						db.newManager(mgrName, teamID);
+					}
+					
+					// build new player object
+					player = new Player(ng, POSITIONS[positionIndex], leagueTier);
+					playerName = player.getName();
+					playerPosition = player.getPosition();
+					playerIntValues[0] = teamID;
+					playerIntValues[1] = player.getStrength();
+					playerIntValues[2] = player.getControl();
+					playerIntValues[3] = player.getSkill();
+					playerIntValues[4] = player.getFitness();
+					playerIntValues[5] = player.getAge();
+					playerIntValues[6] = player.getContractPeriod();
+					playerIntValues[7] = player.getValue();
+					
+					// write new player to database
+					db.addPlayer(playerName, playerPosition, playerIntValues);
+				}
 			}
 		}
 		
 		return true;
+	}
+
+	@Override
+	protected void onPostExecute(Boolean result) {
+
+		
+		
+		super.onPostExecute(result);
 	}
 }

@@ -11,8 +11,6 @@ import com.soccer.constants.GameVars;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-	// class attributes:
-	
 	// Table Create Statements
 	// MANAGER table create statement
 	private static final String CREATE_TABLE_MANAGER = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_MANAGER + "(" 
@@ -101,17 +99,29 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	/*
 	 * add a manager to the table
-	 * used for 
 	 */
-	public long addManager(String name, Integer... values) {
+	public long newManager(String name, int teamID) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		cv.put(GameVars.COLUMN_MANAGER_NAME, name);
-		for (int i = 0; i < values.length; i++) {
-			cv.put(GameVars.COLUMNS_INTEGER_MANAGER[i], values[i]);
-		}
+		cv.put(GameVars.COLUMN_SEASONS, 0);
+		cv.put(GameVars.COLUMN_TEAM_ID, teamID);
+		cv.put(GameVars.COLUMN_WIN, 0);
+		cv.put(GameVars.COLUMN_LOSS, 0);
+		cv.put(GameVars.COLUMN_DRAW, 0);
 		long id = db.insert(GameVars.TABLE_MANAGER, null, cv);
 		return id;
+	}
+	
+	/*
+	 * update the manager table
+	 */
+	public int updateManager(String key, int value) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(key, value);
+		int rows = db.update(GameVars.TABLE_MANAGER, cv, null, null);
+		return rows;
 	}
 	
 	/*

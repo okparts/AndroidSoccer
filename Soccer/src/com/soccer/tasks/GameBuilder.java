@@ -2,6 +2,7 @@ package com.soccer.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.ProgressBar;
 
 import com.soccer.database.DBHelper;
 import com.soccer.interfaces.GameBuilderResponse;
@@ -9,7 +10,7 @@ import com.soccer.models.Player;
 import com.soccer.models.Team;
 import com.soccer.utils.NameGen;
 
-public class GameBuilder extends AsyncTask<String, Void, Boolean> {
+public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 	
 	// async response interface
 	public GameBuilderResponse delegate = null;
@@ -20,6 +21,7 @@ public class GameBuilder extends AsyncTask<String, Void, Boolean> {
 	private Player player = null;
 	private Team team = null;
 	private Context context = null;
+	private ProgressBar loader = null;
 	
 	// utility variables
 	private static final int LEAGUE_TIERS = 10;
@@ -39,9 +41,10 @@ public class GameBuilder extends AsyncTask<String, Void, Boolean> {
 	private Integer[] playerIntValues = {0, 0, 0, 0, 0, 0, 0, 0};
 	
 	 
-	public GameBuilder(Context context, String mgrName) {
+	public GameBuilder(Context context, String mgrName, ProgressBar loader) {
 		this.context = context;
 		this.mgrName = mgrName;
+		this.loader = loader;
 	}
 	
 	@Override
@@ -102,10 +105,19 @@ public class GameBuilder extends AsyncTask<String, Void, Boolean> {
 					// write new player to database
 					db.addPlayer(playerName, playerPosition, playerIntValues);
 				}
+				
+				// update progress bar
+				publishProgress(10);
 			}
 		}
 		
 		return true;
+	}
+
+	@Override
+	protected void onProgressUpdate(Integer... progress) {
+		super.onProgressUpdate(progress[0]);
+		loader.setProgress(progress[0]);
 	}
 
 	@Override

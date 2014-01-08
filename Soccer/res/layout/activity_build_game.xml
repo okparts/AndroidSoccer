@@ -37,12 +37,44 @@
         android:shadowRadius="3"
         android:text="@string/new_game_message" />
     
+    <!-- PROGRESS BAR -->
     <ProgressBar
+        android:id="@+id/gameBuildProgress"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:max="100" />
+    
+    <!-- CONTINUE BUTTON -->
+    <LinearLayout
+        android:id="@+id/contGameBtn"
+        android:layout_width="210dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="55dp"
+        android:paddingBottom="5dp"
+        android:background="@drawable/btn_default"
+        android:visibility="invisible" >
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+	        android:textColor="@color/white"
+	        android:textSize="24sp"
+	        android:shadowColor="@color/black_shadow"
+	        android:shadowDx="2"
+	        android:shadowDy="2"
+	        android:shadowRadius="3"
+	        android:text="@string/cont_game_button_label"
+	        android:gravity="center"
+	        android:clickable="true"
+	        android:focusable="true"
+			android:onClick="contGame" />
+        
+    </LinearLayout>
 
 </LinearLayout>

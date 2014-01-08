@@ -7,7 +7,7 @@ public final class GameVars {
 	
 	// Database Variables:
 		// general DB info
-		public static final String DB_NAME = "soccer"; // database name
+		public static final String DB_NAME = "soccer.db"; // database name
 		public static final int DB_VER = 1; // database version
 		public static final String LOG_TAG = "DB QUERY!!!"; // LogCat Tag name
 		

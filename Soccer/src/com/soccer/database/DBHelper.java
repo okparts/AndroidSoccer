@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ GameVars.COLUMN_WIN + " INTEGER,"
 			+ GameVars.COLUMN_LOSS + " INTEGER,"
 			+ GameVars.COLUMN_DRAW + " INTEGER"
-			+ ")";
+			+ ");";
 	
 	// TEAMS table create statement
 	private static final String CREATE_TABLE_TEAMS = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_TEAMS + "("
@@ -37,7 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ GameVars.COLUMN_TEAM_GOALS_FOR + " INTEGER,"
 			+ GameVars.COLUMN_TEAM_GOALS_AGAINST + " INTEGER,"
 			+ GameVars.COLUMN_TEAM_GAMES_PLAYED + " INTEGER"
-			+ ")";
+			+ ");";
 	
 	// PLAYERS table create statement
 	private static final String CREATE_TABLE_PLAYERS = "CREATE TABLE IF NOT EXISTS " + GameVars.TABLE_PLAYERS + "("
@@ -52,7 +52,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ GameVars.COLUMN_PLAYER_AGE + " INTEGER,"
 			+ GameVars.COLUMN_PLAYER_CONTRACT_PERIOD + " INTEGER,"
 			+ GameVars.COLUMN_PLAYER_VALUE + " INTEGER"
-			+ ")";
+			+ ");";
 	
 	// constructor
 	public DBHelper(Context context) {

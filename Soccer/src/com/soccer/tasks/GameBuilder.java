@@ -2,18 +2,16 @@ package com.soccer.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.soccer.database.DBHelper;
-import com.soccer.interfaces.GameBuilderResponse;
 import com.soccer.models.Player;
 import com.soccer.models.Team;
 import com.soccer.utils.NameGen;
 
 public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
-	
-	// async response interface
-	public GameBuilderResponse delegate = null;
 
 	// builder utilities
 	private static NameGen ng = new NameGen();
@@ -22,6 +20,7 @@ public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 	private Team team = null;
 	private Context context = null;
 	private ProgressBar loader = null;
+	private LinearLayout contBtn = null;
 	
 	// utility variables
 	private static final int LEAGUE_TIERS = 10;
@@ -31,6 +30,7 @@ public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 	private int leagueTier = 0;
 	private int teamID = 0;
 	private int positionIndex = 0;
+	private int progressCounter = 0;
 	private String teamCity = "";
 	private String teamName = "";
 	private String teamNickname = "";
@@ -41,10 +41,11 @@ public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 	private Integer[] playerIntValues = {0, 0, 0, 0, 0, 0, 0, 0};
 	
 	 
-	public GameBuilder(Context context, String mgrName, ProgressBar loader) {
+	public GameBuilder(Context context, String mgrName, ProgressBar loader, LinearLayout contBtn) {
 		this.context = context;
 		this.mgrName = mgrName;
 		this.loader = loader;
+		this.contBtn = contBtn;
 	}
 	
 	@Override
@@ -78,16 +79,19 @@ public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 				// capture new team database ID
 				teamID = (int) db.newTeam(teamCity, teamName, teamNickname, teamIntValues);
 				
+				// build manager for the last team on tier 1
+				if (leagueTier == 1 && j == (TEAMS_PER_LEAGUE - 1)) {
+					// build the user's manager
+					db.newManager(mgrName, teamID);
+				}
+				
+				// increment the progress bar value;
+				progressCounter += 10;
+				
 				// final inner loop builds the 18 players for each team
 				// k = player position index
 				for (int k = 0; k < PLAYERS_PER_TEAM; k++) {
 					positionIndex = k;
-					
-					// build manager for the last team on tier 1
-					if (leagueTier == 1 && j == (TEAMS_PER_LEAGUE - 1)) {
-						// build the user's manager
-						db.newManager(mgrName, teamID);
-					}
 					
 					// build new player object
 					player = new Player(ng, POSITIONS[positionIndex], leagueTier);
@@ -107,7 +111,7 @@ public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 				}
 				
 				// update progress bar
-				publishProgress(10);
+				publishProgress(progressCounter);
 			}
 		}
 		
@@ -123,8 +127,8 @@ public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 	@Override
 	protected void onPostExecute(Boolean result) {
 		// process result from async 
-		delegate.finishedBuilding(result);
-		
+		loader.setVisibility(View.INVISIBLE);
+		contBtn.setVisibility(View.VISIBLE);
 		super.onPostExecute(result);
 	}
 }

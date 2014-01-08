@@ -7,9 +7,10 @@ import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.soccer.interfaces.GameBuilderResponse;
 import com.soccer.tasks.GameBuilder;
 
-public class BuildGame extends Activity {
+public class BuildGame extends Activity implements GameBuilderResponse {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,5 +33,13 @@ public class BuildGame extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.build_game, menu);
 		return true;
+	}
+
+	@Override
+	public void finishedBuilding(Boolean response) {
+		// TODO 
+		// 1. stop and hide the spinning loader when the game is finished building
+		// 2. show a button to start the game
+		
 	}
 }

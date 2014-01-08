@@ -4,11 +4,15 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.soccer.database.DBHelper;
+import com.soccer.interfaces.GameBuilderResponse;
 import com.soccer.models.Player;
 import com.soccer.models.Team;
 import com.soccer.utils.NameGen;
 
 public class GameBuilder extends AsyncTask<String, Void, Boolean> {
+	
+	// async response interface
+	public GameBuilderResponse delegate = null;
 
 	// builder utilities
 	private static NameGen ng = new NameGen();
@@ -106,8 +110,8 @@ public class GameBuilder extends AsyncTask<String, Void, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean result) {
-
-		
+		// process result from async 
+		delegate.finishedBuilding(result);
 		
 		super.onPostExecute(result);
 	}

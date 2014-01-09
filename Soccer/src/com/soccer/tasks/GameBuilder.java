@@ -2,6 +2,7 @@ package com.soccer.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -31,6 +32,8 @@ public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 	private int teamID = 0;
 	private int positionIndex = 0;
 	private int progressCounter = 0;
+	private long begin = 0;
+	private long end = 0;
 	private String teamCity = "";
 	private String teamName = "";
 	private String teamNickname = "";
@@ -46,6 +49,7 @@ public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 		this.mgrName = mgrName;
 		this.loader = loader;
 		this.contBtn = contBtn;
+		this.begin = System.currentTimeMillis();
 	}
 	
 	@Override
@@ -86,7 +90,9 @@ public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 				}
 				
 				// increment the progress bar value;
-				progressCounter += 10;
+				if (j % 4 == 0) {
+					progressCounter += 2;
+				}
 				
 				// final inner loop builds the 18 players for each team
 				// k = player position index
@@ -108,12 +114,17 @@ public class GameBuilder extends AsyncTask<String, Integer, Boolean> {
 					
 					// write new player to database
 					db.addPlayer(playerName, playerPosition, playerIntValues);
+					Log.d("PLAYER ADDED", "League: " + leagueTier + ", Team: " + j + ", Player: " + (k + 1));
 				}
 				
 				// update progress bar
 				publishProgress(progressCounter);
 			}
 		}
+		
+		this.end = System.currentTimeMillis();
+		Integer tt = (int) (end - begin);
+		Log.d("TOTAL TIME", tt.toString());
 		
 		return true;
 	}

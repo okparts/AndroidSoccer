@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.soccer.constants.GameVars;
 
@@ -158,40 +157,10 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 	
 	/*
-	 * add a table name
-	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
+	 * erase all tables
+	 * reset game data/start new game
 	 */
-	public long addName(String table, String column, String fn) {
-		SQLiteDatabase db = this.getWritableDatabase();
-		ContentValues values = new ContentValues();
-		values.put(column, fn);
-		long id = db.insert(table, null, values);
-		return id;
-	}
-	
-	/*
-	 * get a random name
-	 * used for FIRST_NAMES, LAST_NAMES, CITY_NAMES, TEAM_NAMES, NICKNAMES
-	 */
-	public String getRandomName(String table, String column) {
-		SQLiteDatabase db = this.getReadableDatabase();
-		String selectRandom = "SELECT * FROM " + table + " ORDER BY RANDOM() LIMIT 1";
-		Log.d(GameVars.LOG_TAG, selectRandom);
-		
-		Cursor c = db.rawQuery(selectRandom, null);
-		
-		if (c != null) {
-			c.moveToFirst();
-		}
-		
-		String fn = c.getString(c.getColumnIndex(column));
-		return fn;
-	}
-	
-	/*
-	 * erase tables
-	 */
-	public void eraseTables() {
+	public void deleteTables() {
 		// erase existing tables when creating a new game
 		SQLiteDatabase db = this.getReadableDatabase();
 		db.execSQL("DROP TABLE IF EXISTS " + GameVars.TABLE_MANAGER);

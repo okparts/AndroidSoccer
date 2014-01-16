@@ -11,12 +11,14 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.soccer.constants.GameVars;
+import com.soccer.database.DBHelper;
 
 public class MainActivity extends Activity {
 
 	private Vibrator vibe;
 	private View newBtn, contBtn;
 	private boolean gameExists = true;
+	private DBHelper db = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +33,15 @@ public class MainActivity extends Activity {
 	    // initialize vibration
 	    vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	    
+	    //initialize database
+	    db = new DBHelper(this);
+	    
 		setContentView(R.layout.activity_main);
 		
 		// hide continue button if there is not an existing game
 		if (!gameExists) {
 			contBtn.setVisibility(View.INVISIBLE);
 	    }
-
 	}
 
 	@Override
@@ -51,8 +55,13 @@ public class MainActivity extends Activity {
 		vibe.vibrate(GameVars.VIBRATE_TIME);
 		newBtn = (View) findViewById(R.id.newGameBtn);
 		newBtn.setBackgroundResource(R.drawable.btn_pressed);
-		Intent intent = new Intent(this, NewGameOptions.class);
-		startActivity(intent);
+		if (db.tableIsEmpty(GameVars.TABLE_MANAGER) && db.tableIsEmpty(GameVars.TABLE_PLAYERS) && db.tableIsEmpty(GameVars.TABLE_TEAMS)) {
+			// move on to 
+			Intent intent = new Intent(this, NewGameOptions.class);
+			startActivity(intent);
+		} else {
+			// game already exists,
+		}
 	}
 	
 	public void contGame(View view) {

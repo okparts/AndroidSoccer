@@ -18,6 +18,12 @@
     <string name="country_nickname_label">Country Nickname</string>
     <string name="manager_name_hint">Manager\'s Name</string>
     
+    <!-- Confirm Delete Exisitng Game -->
+    <string name="confirm_delete_game_title">Confirm Delete&#8230;</string>
+    <string name="confirm_delete_game_message">Would you like to delete your existing game data?</string>
+    <string name="confirm_delete_game_yes">Delete</string>
+    <string name="confirm_delete_game_no">No, thanks</string>
+    
     <!-- New Game Build -->
     <string name="new_game_message">Building League</string>
     <string name="manager_name_error_blank">The Manager\'s Name cannot be blank.</string>

@@ -1,7 +1,9 @@
 package com.soccer.main;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -19,6 +21,7 @@ public class MainActivity extends Activity {
 	private View newBtn, contBtn;
 	private boolean gameExists = true;
 	private DBHelper db = null;
+	private Intent intent = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class MainActivity extends Activity {
 	    //initialize database
 	    db = new DBHelper(this);
 	    
+	    // set the view
 		setContentView(R.layout.activity_main);
 		
 		// hide continue button if there is not an existing game
@@ -55,12 +59,26 @@ public class MainActivity extends Activity {
 		vibe.vibrate(GameVars.VIBRATE_TIME);
 		newBtn = (View) findViewById(R.id.newGameBtn);
 		newBtn.setBackgroundResource(R.drawable.btn_pressed);
+		intent = new Intent(this, NewGameOptions.class);
 		if (db.tableIsEmpty(GameVars.TABLE_MANAGER) && db.tableIsEmpty(GameVars.TABLE_PLAYERS) && db.tableIsEmpty(GameVars.TABLE_TEAMS)) {
-			// move on to 
-			Intent intent = new Intent(this, NewGameOptions.class);
+			// move on to create a new game
 			startActivity(intent);
 		} else {
-			// game already exists,
+			// game already exists, prompt user to confirm deleting the existing game data
+			new AlertDialog.Builder(this)
+			.setTitle(R.string.confirm_delete_game_title)
+			.setMessage(R.string.confirm_delete_game_message)
+			.setPositiveButton(R.string.confirm_delete_game_yes, new DialogInterface.OnClickListener() {
+
+	            @Override
+	            public void onClick(DialogInterface dialog, int which) {
+	            	// move on to create a new game
+	    			startActivity(intent);
+	            }
+
+	        })
+	        .setNegativeButton(R.string.confirm_delete_game_no, null)
+	        .show();
 		}
 	}
 	
